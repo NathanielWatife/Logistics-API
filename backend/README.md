@@ -431,3 +431,36 @@ All protected routes require the Authorization header:
 ```
 Authorization: Bearer <jwt-token>
 ```
+
+
+
+## Setup postgreSQL with Sequelize
+- initialize sequelize
+```
+npx sequelize-cli init
+```
+
+## Define Models
+- User Model
+Create the user model:
+```
+npx sequelize-cli model:generate --name User --attributes name:string,e
+```
+
+Package Model
+```
+npx sequelize-cli model:generate --name Package --attributes weight:float,quantity:integer,pickup_address:string,delivery_address:string,price:float,status:string
+```
+
+Driver Model
+```
+npx sequelize-cli model:generate --name Driver --attributes name:string,phone:string,license_number:string
+```
+
+Vehicle Model
+bash
+Copy code
+npx sequelize-cli model:generate --name Vehicle --attributes type:string,model:string,license_plate:string,capacity:json
+
+
+5. Build API Endpoints

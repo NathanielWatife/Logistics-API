@@ -5,6 +5,7 @@ const userRoutes = require('./routes/user');
 const packageRoutes = require('./routes/package');
 const driverRoutes = require('./routes/driver'); // Import driver routes
 const vehicleRoutes = require('./routes/vehicle');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
@@ -15,5 +16,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/packages', packageRoutes);
 app.use('/api/drivers', driverRoutes); // Attach driver routes
 app.use('/api/vehicles', vehicleRoutes);
+
+// error handling 
+app.use(errorHandler);
 
 app.listen(5000, () => console.log('Server running on port 5000'));

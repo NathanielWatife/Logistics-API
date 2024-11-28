@@ -1,12 +1,11 @@
 const express = require('express');
-const { createDriver, getDriver, listDriver, updateDriver } = require('../controllers/driverController');
+const { createDriver, getDriver, listDrivers, updateDriver } = require('../controllers/driverController');
 
 const router = express.Router();
 
-router.post('', createDriver);
-router.get('/:id', getDriver);
-router.get('/', listDriver);
-router.put('/:id', updateDriver);
-
+router.post('/', createDriver); // Create a driver
+router.get('/:id', getDriver);  // Get a specific driver by ID
+router.get('/', listDrivers);  // List all drivers
+router.put('/:id', updateDriver); // Update a driver
 
 module.exports = router;

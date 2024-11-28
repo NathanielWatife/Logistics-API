@@ -1,11 +1,19 @@
 const express = require('express');
-require('dotenv').config();
-const app = express();
-
-
-app.use(express.json());
+const bodyParser = require('body-parser');
 
 const userRoutes = require('./routes/user');
-app.use('/api/users', userRoutes);
+const packageRoutes = require('./routes/package');
+const driverRoutes = require('./routes/driver'); // Import driver routes
+const vehicleRoutes = require('./routes/vehicle');
 
-app.listen(5000, () => console.log('Server is running on port 5000'));
+const app = express();
+
+app.use(bodyParser.json());
+
+// Register routes
+app.use('/api/users', userRoutes);
+app.use('/api/packages', packageRoutes);
+app.use('/api/drivers', driverRoutes); // Attach driver routes
+app.use('/api/vehicles', vehicleRoutes);
+
+app.listen(3000, () => console.log('Server running on port 3000'));

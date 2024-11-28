@@ -18,6 +18,9 @@ module.exports = {
       license_number: {
         type: Sequelize.STRING
       },
+      vehicle_id: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

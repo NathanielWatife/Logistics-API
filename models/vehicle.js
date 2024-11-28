@@ -3,16 +3,11 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Vehicle extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // Define association with Driver
+      // Associate Vehicle with Driver
       Vehicle.hasOne(models.Driver, {
-        foreignKey: 'vehicle_id', // Driver table should have a vehicle_id column
-        as: 'driver', // Alias for the association
+        foreignKey: 'vehicle_id',
+        as: 'driver',
       });
     }
   }
@@ -42,15 +37,15 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       capacity: {
-        type: DataTypes.JSON,
-        allowNull: true, // Optional field
+        type: DataTypes.JSON, // Example: { weight: 1000, volume: { length: 200, width: 150, height: 100 } }
+        allowNull: true,
       },
     },
     {
       sequelize,
       modelName: 'Vehicle',
-      tableName: 'vehicles', // Explicit table name
-      timestamps: true, // Enables createdAt and updatedAt columns
+      tableName: 'vehicles',
+      timestamps: true,
     }
   );
 

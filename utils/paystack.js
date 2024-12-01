@@ -8,11 +8,12 @@ const paystack = axios.create({
     },
 });
 
-const initializePaystackPayment = async ({ email, amount }) => {
+const initializePaystackPayment = async ({ email, amount, reference }) => {
     const response = await paystack.post('/transaction/initialize', {
         email,
         amount: amount * 100, // convert to kobi
         currency: 'NGN',
+        reference
     });
     return response.data; // return payment link and transaction reference
 };

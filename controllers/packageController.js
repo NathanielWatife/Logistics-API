@@ -1,52 +1,70 @@
 const { Package } = require('../models');
+const supabase = require('../supabase');
 
+// Create a package
 exports.createPackage = async (req, res) => {
   try {
     const { weight, quantity, pickup_address, delivery_address, price, status } = req.body;
 
-    const package = await Package.create({
-      weight,
-      quantity,
-      pickup_address,
-      delivery_address,
-      price,
-      status: status || 'Pending',
-    });
+    const { data, error } = await supabase
+      .from('packages')
+      .insert({ weight, quantity, pickup_address, delivery_address, price, status });
 
-    return res.status(201).json({ message: 'Package created successfully', package });
+    if (error) throw error;
+
+    res.status(201).json(data);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
+// Get package by ID
 exports.getPackage = async (req, res) => {
   try {
-    const package = await Package.findByPk(req.params.id);
-    if (!package) return res.status(404).json({ error: 'Package not found' });
+    const { id } = req.params;
 
-    return res.json(package);
+    const { data, error } = await supabase
+      .from('packages')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+
+    res.json(data);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
+// List all packages
 exports.listPackages = async (req, res) => {
   try {
-    const packages = await Package.findAll();
-    return res.json(packages);
+    const { data, error } = await supabase.from('packages').select('*');
+
+    if (error) throw error;
+
+    res.json(data);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
+// Update package
 exports.updatePackage = async (req, res) => {
   try {
-    const package = await Package.findByPk(req.params.id);
-    if (!package) return res.status(404).json({ error: 'Package not found' });
+    const { id } = req.params;
+    const updates = req.body;
 
-    await package.update(req.body);
-    return res.json({ message: 'Package updated successfully', package });
+    const { data, error } = await supabase
+      .from('packages')
+      .update(updates)
+      .eq('id', id);
+
+    if (error) throw error;
+
+    res.json(data);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };

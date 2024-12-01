@@ -1,50 +1,70 @@
 const { Driver } = require('../models');
+const supabase = require('../supabase');
 
+// Create a driver
 exports.createDriver = async (req, res) => {
   try {
     const { name, phone, license_number, vehicle_id } = req.body;
 
-    const driver = await Driver.create({
-      name,
-      phone,
-      license_number,
-      vehicle_id,
-    });
+    const { data, error } = await supabase
+      .from('drivers')
+      .insert({ name, phone, license_number, vehicle_id });
 
-    return res.status(201).json({ message: 'Driver created successfully', driver });
+    if (error) throw error;
+
+    res.status(201).json(data);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
+// Get driver by ID
 exports.getDriver = async (req, res) => {
   try {
-    const driver = await Driver.findByPk(req.params.id);
-    if (!driver) return res.status(404).json({ error: 'Driver not found' });
+    const { id } = req.params;
 
-    return res.json(driver);
+    const { data, error } = await supabase
+      .from('drivers')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+
+    res.json(data);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
+// List all drivers
 exports.listDrivers = async (req, res) => {
   try {
-    const drivers = await Driver.findAll();
-    return res.json(drivers);
+    const { data, error } = await supabase.from('drivers').select('*');
+
+    if (error) throw error;
+
+    res.json(data);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
+// Update driver
 exports.updateDriver = async (req, res) => {
   try {
-    const driver = await Driver.findByPk(req.params.id);
-    if (!driver) return res.status(404).json({ error: 'Driver not found' });
+    const { id } = req.params;
+    const updates = req.body;
 
-    await driver.update(req.body);
-    return res.json({ message: 'Driver updated successfully', driver });
+    const { data, error } = await supabase
+      .from('drivers')
+      .update(updates)
+      .eq('id', id);
+
+    if (error) throw error;
+
+    res.json(data);
   } catch (err) {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
 };

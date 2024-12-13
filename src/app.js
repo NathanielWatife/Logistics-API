@@ -30,10 +30,16 @@ app.use(express.urlencoded({
 // routes
 app.use('/api', routes);
 
-// erro handling for middleware
-app.use((err, req, res, next) => {
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK', message: 'API is running' });
+  });
+  
+  // Global error handler
+  app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(err.stack || 500).json({ error: err.message || 'Internal Server Error' });
-});
+    res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
+  });
+  
 
 module.exports = app;

@@ -26,19 +26,42 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({email});
-        if (!user) return res.status(400).json({ error: 'Invalid credentials' });
 
+        // Debug log for incoming request
+        console.log('Login request received:', { email, password });
+
+        // Validate request body
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+
+        // Find user by email
+        const user = await User.findOne({ email }).exec();
+        console.log('User fetched from database:', user);
+        if (!user) {
+            return res.status(400).json({ error: 'Invalid email or password' });
+        }
+
+        // Compare password
         const isMatch = await user.comparePassword(password);
-        if (isMatch) return res.status(400).json({ error: 'Invalid credentials' });
+        console.log('Password comparison result:', isMatch);
+        if (!isMatch) {
+            return res.status(400).json({ error: 'Invalid email or password' });
+        }
 
-        // generate jwt token
-        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ token });
+        // Generate JWT token
+        console.log('Preparing to generate JWT for user:', user._id);
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        console.log('Token successfully generated:', token);
+
+        // Send successful response
+        res.status(200).json({ message: 'Login successful', token });
     } catch (err) {
-        res.status(500).json({  error: 'Server error' });
+        console.error('Error during login:', err);
+        res.status(500).json({ error: 'Server error' });
     }
 };
+
 
 // get user profile
 exports.getProfile = async (req, res) => {

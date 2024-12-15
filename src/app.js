@@ -30,7 +30,7 @@ app.use(express.urlencoded({
 // routes
 app.use('/api', routes);
 
-// Health check endpoint
+// Health check for endpoint
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', message: 'API is running' });
   });
